@@ -1,0 +1,9 @@
+box containers login e registrazione
+placeholder profilepic client-side -> rimuovi roba server-side
+
+
+upload profile pic
+
+post!!
+
+css ridimensionabile
