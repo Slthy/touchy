@@ -1,6 +1,7 @@
 <script>
-  let password, email, loginError = false
   import { goto } from '$app/navigation';
+  import { BACKEND_HOST } from '$lib/envVar';
+  let password, email, loginError = false
 
   function setCookie(cname, cvalue) {
     const d = new Date();
@@ -25,7 +26,7 @@
   }
 
   async function login (email, password) {
-    const res = await fetch('http://localhost:3600/auth', {
+    const res = await fetch(BACKEND_HOST+'/auth', {
       method: 'POST',
       headers: {
         "Content-type": "application/json",
@@ -45,7 +46,7 @@
   }
 
   async function fetchUserData (email) {
-    const res = await fetch('http://localhost:3600/getDataEmail', {
+    const res = await fetch(BACKEND_HOST+'/getDataEmail', {
       method: 'POST',
       headers: {
         "Content-type": "application/json",
@@ -80,5 +81,9 @@
       </div>
       <button type="submit" class="absolute top-0 right-0 w-40 h-10 align-right leading-normal rounded whitespace-no-wrap text-white text-sm text-center font-sans subpixel-antialiased font-bold bg-gray-900">Login</button>
     </div>
+    {#if loginError}
+      <span class="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">Invalid email or password!</span>
+    {/if}
   </form>
+  
 </div>

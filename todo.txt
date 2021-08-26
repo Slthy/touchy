@@ -1,9 +1,11 @@
-handle errori registrazione come login
-placeholder profilepic client-side -> rimuovi roba server-side
+placeholder profilepic client-side -> rimuovi roba server-side on--> <p>error</p>
 
 
 upload profile pic
 
 post!!
 
-css ridimensionabile
+css - font size ridimensionabile - profile
+css - better hendle errori login e register
+
+done) userNotFound redirect from /profile, handling register/login errors
