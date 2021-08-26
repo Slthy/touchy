@@ -1,6 +1,6 @@
 {
-  "name": "sveltekit-with-tailwind-jit",
-  "version": "0.1.0",
+  "name": "touchy",
+  "version": "0.1.1",
   "scripts": {
     "dev:only": "svelte-kit dev",
     "build:only": "svelte-kit build",

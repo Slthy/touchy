@@ -1,4 +1,4 @@
-box containers login e registrazione
+handle errori registrazione come login
 placeholder profilepic client-side -> rimuovi roba server-side
 
 

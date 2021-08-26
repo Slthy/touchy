@@ -68,28 +68,17 @@
 
 </script>
 
-<div class="font-sans content-box p-16 ">
-
-  <form on:submit={handleLogin} name="dataDiv" class="relative">
-    <p class="text-center text-9xl subpixel-antialiased font-bold p-16">touchy.</p>
-
-    <div class="flex flex-wrap items-stretch w-full mb-4 relative">	
-      <input bind:value={email} type="email" class="flex-shrink flex-grow flex-auto leading-normal w-px flex-1 border h-10 border-grey-light rounded rounded-l-none px-3 relative focus:border-blue focus:shadow" placeholder="Email" required>
+<div class="font-sans flex h-screen justify-center items-center p-16">
+  <p class="text-center text-9xl subpixel-antialiased font-bold p-8">touchy.</p>
+  <form on:submit={handleLogin} name="dataDiv" class="w-3/6 text-center p-8">
+    <div class="flex flex-wrap items-stretch w-full mb-4 ">	
+      <input type="email" bind:value={email} class="flex-shrink flex-grow flex-auto leading-normal w-px flex-1 border h-10 border-grey-light rounded rounded-l-none px-3 relative focus:border-blue focus:shadow" placeholder="Email" required>
     </div>
-
-    <div class="grid grid-cols-10 ">
-
-      <div class="flex col-start-1 col-end-8 flex-wrap items-stretch w-full mb-4 relative">
-        <input bind:value={password} type="password" class="flex-shrink flex-grow flex-auto leading-normal w-px flex-1 border h-10 border-grey-light rounded rounded-l-none px-3 relative focus:border-blue focus:shadow" placeholder="Password" required>
+    <div class="grid grid-cols-10 relative">
+      <div class="flex col-start-1 col-end-8 flex-wrap items-stretch w-full mb-4 ">
+        <input type="password" bind:value={password} class="absolute flex-shrink flex-grow flex-auto leading-normal w-px flex-1 border h-10 border-grey-light rounded rounded-l-none px-3 relative focus:border-blue focus:shadow" placeholder="Password" required>
       </div>
-
-      <div class="flex col-start-9 col-end-11 flex-wrap items-stretch w-full mb-4 ">	
-        <button type="submit" class="w-40 align-center leading-normal rounded whitespace-no-wrap text-white text-sm text-center font-sans subpixel-antialiased font-bold bg-gray-900">Login</button>
-      </div>
-
+      <button type="submit" class="absolute top-0 right-0 w-40 h-10 align-right leading-normal rounded whitespace-no-wrap text-white text-sm text-center font-sans subpixel-antialiased font-bold bg-gray-900">Login</button>
     </div>
-    {#if loginError}
-      <p class="text-red-500 text-xs italic">Incorrect password or email. Retry</p>
-    {/if}
   </form>
 </div>
