@@ -1,9 +1,14 @@
-placeholder profilepic client-side -> rimuovi roba server-side on--> <p>error</p>
+index
+
 
 
 upload profile pic
 
 post!!
+
+home
+
+profile with posts
 
 css - font size ridimensionabile - profile
 css - better hendle errori login e register

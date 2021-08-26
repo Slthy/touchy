@@ -1,32 +1,10 @@
 <script>
   import { goto } from '$app/navigation';
   import { BACKEND_HOST } from '$lib/envVar';
-  
+  import { getCookie, setCookie } from '$lib/utils.js'
+
   let firstName, lastName, password, email, usernameNoAt, registrationError = false
   $: username='@'+usernameNoAt
-
-  function setCookie(cname, cvalue) {
-    const d = new Date();
-    d.setTime(d.getTime() + 86400000);
-    let expires = "expires="+ d.toUTCString();
-    document.cookie = cname+"=" + cvalue + ";" + expires + ";sameSite=Strict;path=/";
-  }
-
-  function getCookie(cname) {
-    let name = cname + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for(let i = 0; i <ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
-  }
 
   async function registration(firstName, lastName, email, password, username) {
     fetch(BACKEND_HOST+'/users', {

@@ -1,7 +1,8 @@
 <script context="module">
   import { browser } from '$app/env';
   import { goto } from '$app/navigation';
-  import { BACKEND_HOST } from '$lib/envVar';
+  import { BACKEND_HOST } from '$lib/envVar.js';
+  import { getCookie } from '$lib/utils.js'
 
   export async function load({ fetch, page }) { 
     const username = page.params.username
@@ -66,8 +67,8 @@
     <p class="text-left text-3xl subpixel-antialiased ">{info.firstName} {info.lastName}</p>
     {#if existProfilePic}
       <img class="absolute top-0 right-0 w-[128px] h-[128px] rounded-full" src={profilePic} alt="{username}'s profile image"/>
-      {:else}
-	    <p>error</p>
+    {:else}
+      <img class="absolute top-0 right-0 w-[128px] h-[128px]" src="../static/SVG/placeholderLogo.svg" alt="Placeholder Profile Pic"/>
     {/if}
     {#if info.permissionLevel == 7}
       <img class="h-14 pt-6" src="../static/SVG/ranks/adminRank.svg" alt="{info.firstName} {info.lastName} is the admin of Touchy"/>
