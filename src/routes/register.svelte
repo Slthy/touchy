@@ -2,6 +2,7 @@
   import { goto } from '$app/navigation';
   import { BACKEND_HOST } from '$lib/envVar';
   import { getCookie, setCookie } from '$lib/utils.js'
+  import { browser } from '$app/env';
 
   let firstName, lastName, password, email, usernameNoAt, registrationError = false
   $: username='@'+usernameNoAt
@@ -53,7 +54,7 @@
       })
     })
     const data = await res.json()
-    setCookie('TouchyProfile', JSON.stringify(data))
+    if (browser) setCookie('TouchyProfile', JSON.stringify(data))
     const userData = JSON.parse(getCookie('TouchyProfile'))
     goto('/profile/'+userData.username)
   }
@@ -93,6 +94,6 @@
       </div>
       {#if registrationError}
       <span class="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">Invalid email or password!</span>
-    {/if}
+      {/if}
     </form>
 </div>

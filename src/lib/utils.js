@@ -1,8 +1,13 @@
+import jwt_decode from "jwt-decode";
+import { browser } from '$app/env';
+
 export function setCookie(cname, cvalue) {
-  const d = new Date();
-  d.setTime(d.getTime() + 86400000);
-  let expires = "expires="+ d.toUTCString();
-  document.cookie = cname+"=" + cvalue + ";" + expires + ";sameSite=Strict;path=/";
+  if (browser) {
+    const d = new Date();
+    d.setTime(d.getTime() + 86400000);
+    let expires = "expires="+ d.toUTCString();
+    document.cookie = cname+"=" + cvalue + ";" + expires + ";sameSite=Strict;path=/";
+  }
 }
 
 export function getCookie(cname) {
@@ -19,4 +24,9 @@ export function getCookie(cname) {
     }
   }
   return "";
+}
+
+export function checkIfLoggedTrue (jwt, email) {
+  const parsedJwt = jwt_decode(jwt)
+  return (parsedJwt.email == email)
 }

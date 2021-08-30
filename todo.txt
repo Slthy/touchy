@@ -1,8 +1,12 @@
+auth post and profilepic
+logged svg everywhere
+regex varie registration
+(backend) duplicated profilePic if jpg/png is altrady present and been uploaded the other extension
+handle upload errors
+
 index
 
 
-
-upload profile pic
 
 post!!
 
@@ -12,5 +16,4 @@ profile with posts
 
 css - font size ridimensionabile - profile
 css - better hendle errori login e register
-
-done) userNotFound redirect from /profile, handling register/login errors
+css - tags flex div logged, vip, admin
