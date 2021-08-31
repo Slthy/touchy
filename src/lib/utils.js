@@ -13,29 +13,31 @@ export function setCookie(cname, cvalue, duration = DEFAULT_COOKIE_DURATION) {
 }
 
 export function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for(let i = 0; i <ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
+  if (browser) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
     }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
+    return "";
   }
-  return "";
 }
 
 export function checkIfLoggedTrue (jwt, username) {
-  const parsedJwt = jwt_decode(jwt)
-  console.log(1)
-  return (parsedJwt.username == username)
+  if (browser) {
+    const parsedJwt = jwt_decode(jwt)
+    return (parsedJwt.username == username)
+  }
 }
 
 export async function fetchUserData (username) {
-  console.log(1)
   const res = await fetch(BACKEND_HOST+'/getDataUsername', {
     method: 'POST',
     headers: {
@@ -46,6 +48,5 @@ export async function fetchUserData (username) {
     })
   })
   const data = await res.json()
-  console.log('problem: '+data.username)
   goto('/profile/'+data.username)
 }

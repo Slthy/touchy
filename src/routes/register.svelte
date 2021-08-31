@@ -1,12 +1,13 @@
 <script>
   import { goto } from '$app/navigation';
   import { BACKEND_HOST } from '$lib/envVar';
-  import { getCookie, setCookie } from '$lib/utils.js'
-  import { browser } from '$app/env';
+  import { setCookie } from '$lib/utils.js'
+  import jwt_decode from "jwt-decode";
   let firstName, lastName, password, email, usernameNoAt, registrationError = false
-  $: username='@'+usernameNoAt
+  $: username='@'+usernameNoAt //check whenever usernameNoAt changes and changes itself
+
   async function registration(firstName, lastName, email, password, username) {
-    fetch(BACKEND_HOST+'/users', {
+    const res = await fetch(BACKEND_HOST+'/users', {
       method: 'POST',
       headers: {
         "Content-type": "application/json",
@@ -18,42 +19,17 @@
         password: password,
         username: username
       })
-    }).then((res) => {
-      if (res.status == 201){
-        login(username, password)
-      } else registrationError = true;
-    })
-  }
-  async function login (username, password) {
-    const res = await fetch(BACKEND_HOST+'/auth', {
-      method: 'POST',
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password
-      })
     })
     const data = await res.json()
-    setCookie('TouchyTokens', JSON.stringify(data))
-    fetchUserData(username)
+    
+    if(res.status==200) {
+      const jwt = JSON.stringify(data) //convert retrived jwt tokens to string
+      setCookie('TouchyTokens', jwt)
+      const parsedJwt = jwt_decode(jwt)
+      goto('/profile/'+parsedJwt.username)
+    } else registrationError = true;
   }
-  async function fetchUserData (username) {
-    const res = await fetch(BACKEND_HOST+'/getDataUsername', {
-      method: 'POST',
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username
-      })
-    })
-    const data = await res.json()
-    if (browser) setCookie('TouchyProfile', JSON.stringify(data))
-    const userData = JSON.parse(getCookie('TouchyProfile'))
-    goto('/profile/'+userData.username)
-  }
+
   async function handleRegistration(event){
     event.preventDefault()
     registration(firstName, lastName, email, password, username)
