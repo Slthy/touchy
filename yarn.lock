@@ -1238,7 +1238,12 @@
   "resolved" "https://registry.npmjs.org/svelte-hmr/-/svelte-hmr-0.14.4.tgz"
   "version" "0.14.4"
 
-"svelte@^3.34.0", "svelte@^3.38.2", "svelte@>=3.19.0":
+"svelte-lazy@^1.0.10":
+  "integrity" "sha512-JW3BD14GUIfAZT/zrAqXkcEg16TfxJBt9GXSeY5fLJ+P0ZVf7F/H+jk17HpzbjFOhigVPJapjpahTyTaq7YLNA=="
+  "resolved" "https://registry.npmjs.org/svelte-lazy/-/svelte-lazy-1.0.10.tgz"
+  "version" "1.0.10"
+
+"svelte@^3.34.0", "svelte@^3.38.2", "svelte@>=3.19.0", "svelte@3.x":
   "integrity" "sha512-q5Dq0/QHh4BLJyEVWGe7Cej5NWs040LWjMbicBGZ+3qpFWJ1YObRmUDZKbbovddLC9WW7THTj3kYbTOFmU9fbg=="
   "resolved" "https://registry.npmjs.org/svelte/-/svelte-3.38.2.tgz"
   "version" "3.38.2"

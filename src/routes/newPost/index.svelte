@@ -1,5 +1,4 @@
 <script context="module">
-  //  <input type="file" name="profilePic" class="h-8 rounded whitespace-no-wrap text-white text-sm text-center font-sans subpixel-antialiased font-bold bg-gray-900" bind:files bind:this={input} on:change={(e)=>onFileSelected(e)}>
   import { getCookie, checkIfLoggedTrue } from '$lib/utils.js'
   import { browser } from '$app/env';
   export async function load() { 
@@ -28,8 +27,8 @@
       bytes[i / 2] = parseInt(data.substring(i, i + 2), 16);
     }
     let formData = new FormData();
-    formData.append('profilePic', files[0], user_info.username); //*
-    const res = await fetch(BACKEND_HOST+'/uploadProfilePic', {
+    formData.append('post', files[0], user_info.username); //*
+    const res = await fetch(BACKEND_HOST+'/uploadPost', {
       method: 'POST',
       body: formData
     });
@@ -68,7 +67,7 @@
         <button class="w-[110px] h-10 text-sm rounded-md shadow-md tracking-wide border border-gray-900 border-2 cursor-pointer bg-gray-900 hover:bg-white hover:text-gray-900 text-white ease-linear transition-all duration-150 font-sans subpixel-antialiased font-bold" on:click={tryToUpload}>Upload image</button>
         <label class="w-[150px] h-10 flex flex-col items-center py-2 rounded-md shadow-md tracking-wide border border-gray-900 border-2 cursor-pointer bg-gray-900 hover:bg-white hover:text-gray-900 text-white ease-linear transition-all duration-150 font-sans subpixel-antialiased font-bold">
           <span class="text-center xt-white text-sm">Select an image</span>
-          <input type="file" name="profilePic" bind:files bind:this={input} on:change={(e)=>onFileSelected(e)} class="hidden" />  
+          <input type="file" name="post" bind:files bind:this={input} on:change={(e)=>onFileSelected(e)} class="hidden" />  
         </label>
         <button class="w-[100px] h-10 text-sm rounded-md shadow-md tracking-wide border border-gray-900 border-2 cursor-pointer bg-gray-900 hover:bg-white hover:text-gray-900 text-white ease-linear transition-all duration-150 font-sans subpixel-antialiased font-bold" on:click={() => {input.value = ''; imgBase64 = null}}>Reset image</button>
         {#if notLoggedError }
