@@ -3,7 +3,8 @@
   import { goto } from '$app/navigation';
   import { BACKEND_HOST } from '$lib/envVar.js';
   import { getCookie, checkIfLoggedTrue } from '$lib/utils.js'
-  let isLogged
+  import jwt_decode from "jwt-decode";
+  import { setCookie } from '$lib/utils.js'
 
   async function blobToImage (blob) {
     return await new Promise(function (resolve) {
@@ -16,21 +17,35 @@
 
   export async function load({ fetch, page }) { 
     const username = page.params.username
-    let scrProfilePic = null, existProfilePic = true, post_firstRow1 = null, post_firstRow2 = null, hasMorePosts = false
-    const infoReq = await fetch(BACKEND_HOST+'/getDataUsername', {
-      method: 'POST',
-      body: JSON.stringify({
-        username: username
-      }),
-      mode: 'cors',
-      headers: {
-        'content-type': 'application/json'
-      }
-    })
-    const info = await infoReq.json()
-    if (browser) isLogged = checkIfLoggedTrue(getCookie('TouchyTokens'), info.email)
-    if (infoReq.status == 200) {
-      const imageProfile = await fetch(BACKEND_HOST+'/getProfilePic', {
+    let isLogged = false, scrProfilePic = null, existProfilePic = false, post_firstRow1 = null, post_firstRow2 = null, hasMorePosts = false, fullName = null, permissionLevel, numberOfPosts = null, jwt
+    if (browser) jwt = getCookie('TouchyTokens') //get jwt tokes
+
+    if (browser) isLogged = checkIfLoggedTrue(jwt, username) //check if logged => 'logged' badge, new post and upload profile pic ()
+    if (isLogged) {
+      let decoded_jwt
+      if (browser) decoded_jwt = jwt_decode(jwt)
+      fullName = decoded_jwt.name
+      permissionLevel = decoded_jwt.permissionLevel
+      numberOfPosts = decoded_jwt.numberOfPosts
+    } else {
+      const infoReq = await fetch(BACKEND_HOST+'/getDataUsername', { //get user info
+        method: 'POST',
+        body: JSON.stringify({
+          username: username
+        }),
+        mode: 'cors',
+        headers: {
+          'content-type': 'application/json'
+        }
+      })
+      const info = await infoReq.json()
+      fullName = info.name
+      permissionLevel = info.permissionLevel
+      numberOfPosts = info.numberOfPosts
+    }
+
+    if (isLogged) {
+      const imageProfile = await fetch(BACKEND_HOST+'/getProfilePic', { //if user exist, search for the profile pic
         method: 'POST',
         body: JSON.stringify({
           username:username
@@ -41,11 +56,10 @@
         }
       })
       const blobProfilePic = await imageProfile.blob()
-      if (imageProfile.status == 200 ) { existProfilePic = true } else existProfilePic = false
-      if (browser) scrProfilePic = await blobToImage(blobProfilePic)
+      if (imageProfile.status == 200 ) existProfilePic = true 
 
-      if (info.numberOfPosts > 0) {
-        const loadPost = await fetch(BACKEND_HOST+'/getPost', {
+      if (numberOfPosts > 0) { //try get 2 user posts
+        const loadPost = await fetch(BACKEND_HOST+'/getPost', { //get first user post
           method: 'POST',
           body: JSON.stringify({
             username:username,
@@ -59,7 +73,7 @@
         const blobPost = await loadPost.blob()
         if (browser) post_firstRow1 = await blobToImage(blobPost)
       }
-      if (info.numberOfPosts > 1) {
+      if (numberOfPosts > 1) { //get second user post
         const loadPost = await fetch(BACKEND_HOST+'/getPost', {
           method: 'POST',
           body: JSON.stringify({
@@ -74,15 +88,18 @@
         const blobPost = await loadPost.blob()
         if (browser) post_firstRow2 = await blobToImage(blobPost)
       }
-      if (info.numberOfPosts > 2) hasMorePosts = true
+      if (numberOfPosts > 2) hasMorePosts = true //if user has more posts, change value to true (future feature, see projects)
+      if (browser) scrProfilePic = await blobToImage(blobProfilePic)
 
 
-    } else if (browser) goto('/userNotFound/'+username)
+    } else if (browser) goto('/userNotFound/'+username) //redirect to 'userNotFound/'
     return {
       props: {
-        info: info,
-        profilePic: scrProfilePic,
         username: username,
+        fullName: fullName,
+        permissionLevel: permissionLevel,
+        numberOfPosts: numberOfPosts,
+        profilePic: scrProfilePic,
         existProfilePic : existProfilePic,
         isLogged: isLogged,
         hasMorePosts: hasMorePosts,
@@ -94,8 +111,7 @@
 </script>
 
 <script>
-  import Lazy from 'svelte-lazy';
-  export let info, profilePic, username, existProfilePic, isLogged, hasMorePosts, post_firstRow1, post_firstRow2
+  export let isLogged, username, fullName, permissionLevel, existProfilePic, profilePic, post_firstRow1, post_firstRow2
 </script>
 
 <svelte:head>
@@ -105,7 +121,7 @@
 <div class="font-sans content-box p-16 ">
   <div class="relative">
     <p class="text-left text-9xl subpixel-antialiased font-bold">{username.substring(1)}</p>
-    <p class="text-left text-3xl subpixel-antialiased ">{info.firstName} {info.lastName}</p>
+    <p class="text-left text-3xl subpixel-antialiased ">{fullName}</p>
     {#if existProfilePic}
       <img class="absolute top-0 right-0 w-[128px] h-[128px] rounded-full" src={profilePic} alt="{username}'s profile image"/>
     {:else}
@@ -116,13 +132,13 @@
     {/if}
     <div class="flex">
       {#if isLogged}
-        <img class="h-14 pt-6" src="../static/SVG/logged.svg" alt="{info.firstName} {info.lastName} is logged in"/>
+        <img class="h-14 pt-6" src="../static/SVG/logged.svg" alt="{fullName} is logged in"/>
       {/if}
-      {#if info.permissionLevel == 7}
-        <img class="h-14 pt-6" src="../static/SVG/ranks/adminRank.svg" alt="{info.firstName} {info.lastName} is the admin of Touchy"/>
+      {#if permissionLevel == 7}
+        <img class="h-14 pt-6" src="../static/SVG/ranks/adminRank.svg" alt="{fullName} is the admin of Touchy"/>
       {/if}
-      {#if info.permissionLevel == 2}
-        <img class="h-14 pt-6" src="../static/SVG/ranks/vipRank.svg" alt="{info.firstName} {info.lastName} has a vip rank in Touchy"/>
+      {#if permissionLevel == 2}
+        <img class="h-14 pt-6" src="../static/SVG/ranks/vipRank.svg" alt="{fullName} has a vip rank in Touchy"/>
       {/if}
     </div>
   </div>
@@ -132,19 +148,19 @@
 
   {#if isLogged}
     <div class="my-6 px-6 w-1/3 overflow-hidden sm:my-6 sm:px-6 sm:w-1/3 md:my-8 md:px-8 md:w-1/3 lg:my-6 lg:px-6 lg:w-1/3 xl:my-6 xl:px-6 xl:w-1/3">
-      <img class="w-1/2" on:click={() => (goto('/newPost'))} src="../static/SVG/placeholder_newPost.svg" alt="{info.firstName} {info.lastName} is logged in"/>
+      <img class="w-1/2" on:click={() => (goto('/newPost'))} src="../static/SVG/placeholder_newPost.svg" alt="{fullName} is logged in"/>
     </div>
   {/if}
 
   <div class="items-center my-6 px-6 w-1/3 overflow-hidden sm:my-6 sm:px-6 sm:w-1/3 md:my-8 md:px-8 md:w-1/3 lg:my-6 lg:px-6 lg:w-1/3 xl:my-6 xl:px-6 xl:w-1/3">
     {#if post_firstRow1}
-      <img class="w-1/2" src={post_firstRow1} alt="{info.firstName} {info.lastName} post"/>
+      <img class="w-1/2" src={post_firstRow1} alt="{fullName} post"/>
     {/if}
   </div>
 
   <div class="my-6 px-6 w-1/3 overflow-hidden sm:my-6 sm:px-6 sm:w-1/3 md:my-8 md:px-8 md:w-1/3 lg:my-6 lg:px-6 lg:w-1/3 xl:my-6 xl:px-6 xl:w-1/3">
     {#if post_firstRow2}
-      <img class="w-1/2" src={post_firstRow2} alt="{info.firstName} {info.lastName} post"/>
+      <img class="w-1/2" src={post_firstRow2} alt="{fullName} post"/>
     {/if}
   </div>
 

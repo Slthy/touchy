@@ -1,5 +1,6 @@
+<!--Needs come css stuff-->
 <script context="module">
-  export async function load({ fetch, page }) { 
+  export async function load({ page }) { 
     const username = page.params.username
     return {
       props: {
@@ -13,4 +14,8 @@
   export let username
 </script>
 
-<h1>{username} not found</h1>
+<svelte:head>
+	<title>touchy - user not found</title>
+</svelte:head>
+
+<h1>404 - {username} not found</h1>

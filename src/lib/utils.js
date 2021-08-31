@@ -1,10 +1,12 @@
 import jwt_decode from "jwt-decode";
 import { browser } from '$app/env';
+import { BACKEND_HOST, DEFAULT_COOKIE_DURATION } from '$lib/envVar.js';
+import { goto } from '$app/navigation';
 
-export function setCookie(cname, cvalue) {
+export function setCookie(cname, cvalue, duration = DEFAULT_COOKIE_DURATION) {
   if (browser) {
     const d = new Date();
-    d.setTime(d.getTime() + 86400000);
+    d.setTime(d.getTime() + duration);
     let expires = "expires="+ d.toUTCString();
     document.cookie = cname+"=" + cvalue + ";" + expires + ";sameSite=Strict;path=/";
   }
@@ -26,7 +28,24 @@ export function getCookie(cname) {
   return "";
 }
 
-export function checkIfLoggedTrue (jwt, email) {
+export function checkIfLoggedTrue (jwt, username) {
   const parsedJwt = jwt_decode(jwt)
-  return (parsedJwt.email == email)
+  console.log(1)
+  return (parsedJwt.username == username)
+}
+
+export async function fetchUserData (username) {
+  console.log(1)
+  const res = await fetch(BACKEND_HOST+'/getDataUsername', {
+    method: 'POST',
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({
+      username: username
+    })
+  })
+  const data = await res.json()
+  console.log('problem: '+data.username)
+  goto('/profile/'+data.username)
 }

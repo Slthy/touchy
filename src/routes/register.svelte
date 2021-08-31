@@ -3,10 +3,8 @@
   import { BACKEND_HOST } from '$lib/envVar';
   import { getCookie, setCookie } from '$lib/utils.js'
   import { browser } from '$app/env';
-
   let firstName, lastName, password, email, usernameNoAt, registrationError = false
   $: username='@'+usernameNoAt
-
   async function registration(firstName, lastName, email, password, username) {
     fetch(BACKEND_HOST+'/users', {
       method: 'POST',
@@ -22,35 +20,33 @@
       })
     }).then((res) => {
       if (res.status == 201){
-        login(email, password)
+        login(username, password)
       } else registrationError = true;
     })
   }
-
-  async function login (email, password) {
+  async function login (username, password) {
     const res = await fetch(BACKEND_HOST+'/auth', {
       method: 'POST',
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        email: email,
+        username: username,
         password: password
       })
     })
     const data = await res.json()
     setCookie('TouchyTokens', JSON.stringify(data))
-    fetchUserData(email)
+    fetchUserData(username)
   }
-
-  async function fetchUserData (email) {
-    const res = await fetch(BACKEND_HOST+'/getDataEmail', {
+  async function fetchUserData (username) {
+    const res = await fetch(BACKEND_HOST+'/getDataUsername', {
       method: 'POST',
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        email: email
+        username: username
       })
     })
     const data = await res.json()
@@ -58,7 +54,6 @@
     const userData = JSON.parse(getCookie('TouchyProfile'))
     goto('/profile/'+userData.username)
   }
-
   async function handleRegistration(event){
     event.preventDefault()
     registration(firstName, lastName, email, password, username)
