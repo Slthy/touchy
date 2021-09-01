@@ -7,8 +7,8 @@ export function setCookie(cname, cvalue, duration = DEFAULT_COOKIE_DURATION) {
   if (browser) {
     const d = new Date();
     d.setTime(d.getTime() + duration);
-    let expires = "expires="+ d.toUTCString();
-    document.cookie = cname+"=" + cvalue + ";" + expires + ";sameSite=Strict;path=/";
+    let expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";sameSite=Strict;path=/";
   }
 }
 
@@ -17,7 +17,7 @@ export function getCookie(cname) {
     let name = cname + "=";
     let decodedCookie = decodeURIComponent(document.cookie);
     let ca = decodedCookie.split(';');
-    for(let i = 0; i <ca.length; i++) {
+    for (let i = 0; i < ca.length; i++) {
       let c = ca[i];
       while (c.charAt(0) == ' ') {
         c = c.substring(1);
@@ -30,15 +30,16 @@ export function getCookie(cname) {
   }
 }
 
-export function checkIfLoggedTrue (jwt, username) {
+export function checkIfLoggedTrue(username) {
   if (browser) {
+    const jwt = getCookie("TouchyTokens")
     const parsedJwt = jwt_decode(jwt)
-    return (parsedJwt.username == username)
+    return (parsedJwt.username === username)
   }
 }
 
-export async function fetchUserData (username) {
-  const res = await fetch(BACKEND_HOST+'/getDataUsername', {
+export async function fetchUserData(username) {
+  const res = await fetch(BACKEND_HOST + '/getDataUsername', {
     method: 'POST',
     headers: {
       "Content-type": "application/json",
@@ -48,5 +49,5 @@ export async function fetchUserData (username) {
     })
   })
   const data = await res.json()
-  goto('/profile/'+data.username)
+  goto('/profile/' + data.username)
 }

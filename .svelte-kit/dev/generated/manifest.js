@@ -3,8 +3,8 @@ const c = [
 	() => import("../components/error.svelte"),
 	() => import("../../../src/routes/userNotFound/[username].svelte"),
 	() => import("../../../src/routes/register.svelte"),
-	() => import("../../../src/routes/settings/uploadProfilePic.svelte"),
-	() => import("../../../src/routes/newPost/index.svelte"),
+	() => import("../../../src/routes/profile/uploadProfilePic/[username].svelte"),
+	() => import("../../../src/routes/profile/newPost/[username].svelte"),
 	() => import("../../../src/routes/profile/[username].svelte"),
 	() => import("../../../src/routes/login.svelte"),
 	() => import("../../../src/routes/home.svelte")
@@ -19,11 +19,11 @@ export const routes = [
 	// src/routes/register.svelte
 	[/^\/register\/?$/, [c[0], c[3]], [c[1]]],
 
-	// src/routes/settings/uploadProfilePic.svelte
-	[/^\/settings\/uploadProfilePic\/?$/, [c[0], c[4]], [c[1]]],
+	// src/routes/profile/uploadProfilePic/[username].svelte
+	[/^\/profile\/uploadProfilePic\/([^/]+?)\/?$/, [c[0], c[4]], [c[1]], (m) => ({ username: d(m[1])})],
 
-	// src/routes/newPost/index.svelte
-	[/^\/newPost\/?$/, [c[0], c[5]], [c[1]]],
+	// src/routes/profile/newPost/[username].svelte
+	[/^\/profile\/newPost\/([^/]+?)\/?$/, [c[0], c[5]], [c[1]], (m) => ({ username: d(m[1])})],
 
 	// src/routes/profile/[username].svelte
 	[/^\/profile\/([^/]+?)\/?$/, [c[0], c[6]], [c[1]], (m) => ({ username: d(m[1])})],
