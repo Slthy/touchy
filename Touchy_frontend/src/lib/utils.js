@@ -33,6 +33,7 @@ export function getCookie(cname) {
 export function checkIfLoggedTrue(username) {
   if (browser) {
     const jwt = getCookie("TouchyTokens")
+    if (jwt == '') return false
     const parsedJwt = jwt_decode(jwt)
     return (parsedJwt.username === username)
   }

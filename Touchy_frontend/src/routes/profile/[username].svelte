@@ -2,8 +2,7 @@
   import { browser } from "$app/env";
   import { goto } from "$app/navigation";
   import { BACKEND_HOST } from "$lib/envVar.js";
-  import { getCookie, checkIfLoggedTrue } from "$lib/utils.js";
-  import jwt_decode from "jwt-decode";
+  import { checkIfLoggedTrue } from "$lib/utils.js";
 
   async function blobToImage(blob) {
     if (browser) {
@@ -28,8 +27,6 @@
       permissionLevel,
       numberOfPosts = null,
       jwt = null;
-
-    //if (browser) jwt = getCookie("TouchyTokens"); //get jwt tokes
 
     isLogged = checkIfLoggedTrue(username); //if user has a jwt token stored in cookies =>
     // if logged => 'logged' badge, new post and upload profile pic ()
