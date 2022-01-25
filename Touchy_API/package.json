@@ -15,7 +15,7 @@
     "jose": "^3.14.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.5",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "uuid": "^8.3.0"
   },
   "devDependencies": {
